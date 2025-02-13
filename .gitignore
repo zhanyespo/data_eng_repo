@@ -1,0 +1,15 @@
+# Ignore Python virtual environment
+venv/
+__pycache__/
+
+# Ignore logs and temporary data
+logs/
+*.log
+*.tmp
+
+# Ignore database files
+data/
+*.db
+
+# Ignore docker volumes
+volumes/
