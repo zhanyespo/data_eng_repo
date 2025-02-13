@@ -1,0 +1,90 @@
+version: '3'
+
+services:
+    clickhouse-zookeeper:
+        image: zookeeper
+        ports:
+            - "2182:2181"
+        container_name: clickhouse-zookeeper
+        hostname: clickhouse-zookeeper
+
+    clickhouse-01:
+        image: localhost:5000/clickhouse
+        hostname: clickhouse-01
+        container_name: clickhouse-01
+        ports:
+            - 9001:9000
+        volumes:
+            - ./config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+            - ./config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+            - ./config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml
+            - ./config/users.xml:/etc/clickhouse-server/users.xml
+            - ./data/server-01:/var/lib/clickhouse
+        ulimits:
+            nofile:
+                soft: 262144
+                hard: 262144
+        depends_on:
+            - "clickhouse-zookeeper"
+
+    clickhouse-02:
+        image: localhost:5000/clickhouse
+        hostname: clickhouse-02
+        container_name: clickhouse-02
+        ports:
+            - 9002:9000
+        volumes:
+            - ./config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+            - ./config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+            - ./config/macros/macros-02.xml:/etc/clickhouse-server/config.d/macros.xml
+            - ./config/users.xml:/etc/clickhouse-server/users.xml
+            - ./data/server-02:/var/lib/clickhouse
+        ulimits:
+            nofile:
+                soft: 262144
+                hard: 262144
+        depends_on:
+            - "clickhouse-zookeeper"
+
+    seaweedfs-master:
+        image: localhost:5000/seaweedfs
+        command: "master -ip=seaweedfs-master -port=9333"
+        container_name: seaweedfs-master
+        hostname: seaweedfs-master
+        ports:
+            - "9333:9333"
+        volumes:
+            - ./data/seaweedfs-master:/data
+        networks:
+            - clickhouse-net
+
+    seaweedfs-volume:
+        image: localhost:5000/seaweedfs
+        command: "volume -mserver=seaweedfs-master:9333 -port=8080 -dir=/data"
+        container_name: seaweedfs-volume
+        hostname: seaweedfs-volume
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./data/seaweedfs-volume:/data
+        depends_on:
+            - seaweedfs-master
+        networks:
+            - clickhouse-net
+
+    victoria-metrics:
+        image: localhost:5000/victoria
+        container_name: victoria-metrics
+        hostname: victoria-metrics
+        ports:
+            - "8428:8428"
+        volumes:
+            - ./data/victoria-metrics:/storage
+        command:
+            - "-storageDataPath=/storage"
+        networks:
+            - clickhouse-net
+
+networks:
+    clickhouse-net:
+        external: true

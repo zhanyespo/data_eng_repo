@@ -1,0 +1,13 @@
+# Jetbrains
+.idea
+# MacOS
+.DS_Store
+# Grafana manually installed plugins
+config_files/grafana/var/lib/grafana/plugins
+# Environment variables
+.env
+# Clickhouse storage manifest
+config_files/clickhouse/etc/clickhouse-server/config.d/storage.xml
+config_files/clickhouse/etc/clickhouse-server/config.d/users.xml
+#Promethues
+config_files/prometheus/prometheus.yaml

@@ -1,0 +1,33 @@
+<clickhouse>
+    <users>
+        <default>
+            <password></password>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </default>
+
+        <clickhouse_admin>
+            <password><![CDATA[StrongPass123!]]></password>
+            <profile>default</profile>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <quota>default</quota>
+            <grants>
+                <grant>ALL ON *.*</grant>
+            </grants>
+        </clickhouse_admin>
+
+        <business_intelligence>
+            <password><![CDATA[BIUserSecurePass!]]></password>
+            <profile>bi</profile>
+            <quota>bi_quota</quota>
+            <grants>
+                <grant>SELECT ON *.*</grant>
+            </grants>
+        </business_intelligence>
+    </users>
+</clickhouse>
