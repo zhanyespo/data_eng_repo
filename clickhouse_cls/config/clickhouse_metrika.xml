@@ -1,14 +1,9 @@
 <?xml version="1.0"?>
 <yandex>
-    <macros>
-        <shard>01</shard>
-        <layer>01</layer>
-    </macros>
-
-    <clickhouse_remote_servers>
-        <cluster_1>
+    <!-- ✅ Cluster Configuration for Distributed Queries -->
+    <remote_servers>
+        <clickhouse_cluster>
             <shard>
-                <weight>1</weight>
                 <internal_replication>true</internal_replication>
                 <replica>
                     <host>clickhouse-01</host>
@@ -19,17 +14,82 @@
                     <port>9000</port>
                 </replica>
             </shard>
-        </cluster_1>
-    </clickhouse_remote_servers>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>clickhouse-03</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>clickhouse-04</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </clickhouse_cluster>
+    </remote_servers>
 
+    <!-- ✅ ZooKeeper Configuration -->
     <zookeeper>
         <node>
-            <host>clickhouse-zookeeper</host>
+            <host>zookeeper-1</host>
+            <port>2181</port>
+        </node>
+        <node>
+            <host>zookeeper-2</host>
+            <port>2181</port>
+        </node>
+        <node>
+            <host>zookeeper-3</host>
             <port>2181</port>
         </node>
     </zookeeper>
 
+    <!-- ✅ Enable Distributed DDL for Schema Changes -->
     <distributed_ddl>
         <path>/clickhouse/task_queue/ddl</path>
     </distributed_ddl>
+
+    <!-- ✅ Query Profiling & Monitoring -->
+    <query_profiler>
+        <cpu_time_period_ns>100000000</cpu_time_period_ns> <!-- 100ms -->
+        <real_time_period_ns>500000000</real_time_period_ns> <!-- 500ms -->
+    </query_profiler>
+
+    <query_log>
+        <database>system</database>
+        <flush_interval_milliseconds>1000</flush_interval_milliseconds>
+    </query_log>
+
+    <query_thread_log>
+        <database>system</database>
+        <flush_interval_milliseconds>1000</flush_interval_milliseconds>
+    </query_thread_log>
+
+    <!-- ✅ Enable System Metrics Logging -->
+    <metric_log>
+        <database>system</database>
+        <flush_interval_milliseconds>10000</flush_interval_milliseconds>
+    </metric_log>
+
+    <asynchronous_metric_log>
+        <database>system</database>
+        <flush_interval_milliseconds>10000</flush_interval_milliseconds>
+    </asynchronous_metric_log>
+
+    <!-- ✅ Keep Track of Errors -->
+    <trace_log>
+        <database>system</database>
+        <flush_interval_milliseconds>1000</flush_interval_milliseconds>
+    </trace_log>
+
+    <!-- ✅ System Profiling -->
+    <text_log>
+        <database>system</database>
+        <flush_interval_milliseconds>1000</flush_interval_milliseconds>
+    </text_log>
+
+    <!-- ✅ Background Task Settings (Optimize Performance) -->
+    <background_pool_size>16</background_pool_size>
+    <background_schedule_pool_size>16</background_schedule_pool_size>
+
 </yandex>

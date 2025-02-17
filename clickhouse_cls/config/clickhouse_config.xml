@@ -38,22 +38,39 @@
                     <port>9000</port>
                 </replica>
             </shard>
+            <shard>
+                <replica>
+                    <host>clickhouse-03</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>clickhouse-04</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
         </clickhouse_cluster>
     </remote_servers>
 
     <zookeeper>
         <node>
-            <host>clickhouse-zookeeper</host>
+            <host>zookeeper-1</host>
+            <port>2181</port>
+        </node>
+        <node>
+            <host>zookeeper-2</host>
+            <port>2181</port>
+        </node>
+        <node>
+            <host>zookeeper-3</host>
             <port>2181</port>
         </node>
     </zookeeper>
 
     <macros incl="macros" optional="true" />
 
-    <!-- Commented out DDL replication to simplify two-node cluster management -->
-    <!-- <distributed_ddl>
+    <distributed_ddl>
         <path>/clickhouse/task_queue/ddl</path>
-    </distributed_ddl> -->
+    </distributed_ddl>
 
     <dictionaries_config>*_dictionary.xml</dictionaries_config>
     <format_schema_path>/var/lib/clickhouse/format_schemas/</format_schema_path>
